@@ -14,8 +14,11 @@ import android.widget.Toast;
 import com.uni.redcarpet.R;
 import com.uni.redcarpet.core.users.getall.GetUsersContract;
 import com.uni.redcarpet.core.users.getall.GetUsersPresenter;
+import com.uni.redcarpet.models.User;
+import com.uni.redcarpet.ui.activities.ChatActivity;
 import com.uni.redcarpet.ui.adapters.UserListingRecyclerAdapter;
 import com.uni.redcarpet.utils.ItemClickSupport;
+
 import java.util.List;
 
 

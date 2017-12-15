@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.uni.redcarpet.R;
 import com.uni.redcarpet.events.PushNotificationEvent;
+import com.uni.redcarpet.ui.activities.ChatActivity;
 import com.uni.redcarpet.ui.activities.StartupCheck;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;

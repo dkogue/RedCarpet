@@ -18,6 +18,7 @@ import com.uni.redcarpet.R;
 import com.uni.redcarpet.core.chat.ChatContract;
 import com.uni.redcarpet.core.chat.ChatPresenter;
 import com.uni.redcarpet.events.PushNotificationEvent;
+import com.uni.redcarpet.models.Chat;
 import com.uni.redcarpet.ui.adapters.ChatRecyclerAdapter;
 import com.uni.redcarpet.utils.Constants;
 
