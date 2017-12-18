@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
+    tools:context=".core.Navigation.NavigationActivity">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:text="TextView"
+        android:id="@+id/locationid"
+        android:hint="enter your address"/>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:onClick="geoLocation"
+        android:text="Go"
+        android:layout_marginTop="2dp"/>
+
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="98dp"
+        tools:layout_editor_absoluteY="16dp"
+        android:layout_marginTop="3dp"/>
+
+</LinearLayout>

@@ -2,7 +2,7 @@ package com.uni.redcarpet.events;
 
 
 public class PushNotificationEvent {
-    private String title;
+    private String title;//
     private String message;
     private String username;
     private String uid;
