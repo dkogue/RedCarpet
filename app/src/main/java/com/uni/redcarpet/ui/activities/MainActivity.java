@@ -456,9 +456,7 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.btn_resend:
                 resendVerificationCode(myETextPhoneNoField.getText().toString(), mResendToken);
                 break;
-            case R.id.sign_out_button:
-                signOut();
-                break;
+
         }
     }
 
