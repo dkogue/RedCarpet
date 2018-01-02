@@ -20,9 +20,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.uni.redcarpet.R;
-import com.uni.redcarpet.core.users.add.AddUserContract;
-import com.uni.redcarpet.core.users.add.AddUserPresenter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
@@ -33,6 +30,9 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.uni.redcarpet.R;
+import com.uni.redcarpet.core.users.add.AddUserContract;
+import com.uni.redcarpet.core.users.add.AddUserPresenter;
 
 import java.util.concurrent.TimeUnit;
 
@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
     private AddUserPresenter mAddUserPresenter;
+
 
     ProgressBar progressBar;
     @Override
@@ -195,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         };
         //END phone_auth_callbacks
+
     }
 
     public static void startIntent(Context context, int flags) {
