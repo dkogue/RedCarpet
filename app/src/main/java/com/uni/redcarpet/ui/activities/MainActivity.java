@@ -305,6 +305,8 @@ public class MainActivity extends AppCompatActivity implements
         updateUI(STATE_INITIALIZED);
     }
 
+    // Update the user interface depending on the call
+
     private void updateUI(int uiState) {
         updateUI(uiState, myAuthentication.getCurrentUser(), null);
     }
@@ -458,7 +460,6 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.btn_resend:
                 resendVerificationCode(myETextPhoneNoField.getText().toString(), mResendToken);
                 break;
-
         }
     }
 

@@ -59,5 +59,6 @@
     <string name="navigation_settings">Settings</string>
     <string name="msg_password">Enter below the verification code that has been sent to you via SMS.</string>
     <string name="prompt_phone">Phone Number</string>
+    <string name="confirm_location">Confirm location</string>
 
 </resources>
