@@ -4,18 +4,22 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 
 <item
     android:id="@+id/navigation_events_id"
+    android:icon="@drawable/ic_view_list_black_24dp"
     android:title="@string/navigation_events"
     />
 <item
     android:id="@+id/navigation_chat_id"
+    android:icon="@drawable/ic_chat_black_24dp"
     android:title="@string/navigation_chats"
     />
 <item
     android:id="@+id/navigation_checkin_id"
+    android:icon="@drawable/ic_check_black_24dp"
     android:title="@string/navigation_check_in_out"
     />
 <item
     android:id="@+id/navigation_settings_id"
+    android:icon="@drawable/ic_settings_black_24dp"
     android:title="@string/navigation_settings"
     />
 

@@ -11,6 +11,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.uni.redcarpet.models.Event;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,7 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EventJson {
+public class EventUtil {
 
     private String name;
     private String description;
@@ -33,7 +37,7 @@ public class EventJson {
 
 
     // get events from file
-/*    public static ArrayList<Event> getEventsFromFile(String filename, Context context){
+    public static ArrayList<Event> getEventsFromFile(String filename, Context context){
         final ArrayList<Event> eventList = new ArrayList<Event>();
 
         try{
@@ -64,7 +68,7 @@ public class EventJson {
         }
 
         return eventList;
-    }*/
+    }
 
     //get events from databasae for certain date
 /*    public static ArrayList<Event> getEventsFromFileDate(String filename, String date, Context context){
@@ -83,7 +87,7 @@ public class EventJson {
         return events;
     }*/
 
-    //load json file from the asset folder
+    // load json file from the asset folder
     private static String loadJsonFromAsset(String filename, Context context){
         String json = null;
 
@@ -104,7 +108,7 @@ public class EventJson {
         return json;
     }
 
-    //save certain event to firebase
+    // save certain event to firebase
     public static void saveEventToFirebase(Event event){
 
         FirebaseDatabase database;
@@ -320,9 +324,6 @@ public class EventJson {
                         new_event.type = (String) event.get("type");
                         new_event.organizer = (String) event.get("organizer");
                         new_event.description = (String) event.get("description");
-                        //new_event.longitude = (double) event.get("longitude");
-                        //new_event.latitude = (double) event.get("latitude");
-
                         //System.out.println(new_event.toString());
 
                         events.add(new_event);
@@ -349,7 +350,7 @@ public class EventJson {
 
     }
 
-    //filter a list of events by current date
+    // filter a list of events by current date
     public ArrayList<Event> checkCurrentDate(ArrayList<Event> events){
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("M-d-yyyy");
@@ -358,7 +359,7 @@ public class EventJson {
         return checkDate(currentDate, events);
     }
 
-    //get events created by specific user
+    // get events created by specific user
     public ArrayList<Event> getEventForSpecificUser(DataSnapshot dataSnapshot){
         ArrayList<Event> events = new ArrayList<Event>();
 

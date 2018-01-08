@@ -10,11 +10,12 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import com.uni.redcarpet.R;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -32,7 +33,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceStates) {
 
-        View v = inflater.inflate(R.layout.create_event, container, false);
+        View v = inflater.inflate(R.layout.fragment_create_event, container, false);
 
         // associate member variables with the xml buttons
         Button b3 = (Button) v.findViewById(R.id.button3);
@@ -43,16 +44,16 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         b2.setOnClickListener(this);
 
         etorganizer = (EditText) v.findViewById(R.id.organizer);
-        etevent_name = (EditText) v.findViewById(R.id.event_name);
+        etevent_name = (EditText) v.findViewById(R.id.event_title);
         etaddress = (EditText) v.findViewById(R.id.address);
 
         datepicker = (DatePicker) v.findViewById(R.id.datePicker2);
 
-        spinner = (Spinner) v.findViewById(R.id.category);
+        /*spinner = (Spinner) v.findViewById(R.id.category);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.category_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        spinner.setAdapter(adapter);*/
 
         return v;
     }
@@ -66,7 +67,8 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 String organizer = etorganizer.getText().toString();
                 String event_name = etevent_name.getText().toString();
                 String address = etaddress.getText().toString();
-                String type = spinner.getSelectedItem().toString();
+                // String type = spinner.getSelectedItem().toString();
+                String type = "Party";
                 int day = datepicker.getDayOfMonth();
                 int month = datepicker.getMonth()+1;
                 int year = datepicker.getYear();
@@ -96,7 +98,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                     new AlertDialog.Builder(getActivity())
                             //.setIcon(android.R.drawable.ic_dialog_info)
                             .setTitle("Empty field(s)!")
-                            .setMessage("Please completely fill all the fields before creating an event.")
+                            .setMessage("Please complete the form before creating an event.")
                             .setPositiveButton("Ok", null)
                             .show();
                     break;
@@ -145,7 +147,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                                 Bundle args = new Bundle();
                                 // args.putBoolean("hasLoggedIn", MainActivity.hasLoggedIn);
                                 args.putStringArray("currEvent",event);
-                                NewEventMapFragment newFragment = new NewEventMapFragment();
+                                CreateEventMapFragment newFragment = new CreateEventMapFragment();
                                 newFragment.setArguments(args);
                                 newFragment.setDetails(etaddress.getText().toString(), etevent_name.getText().toString(), 0.0f, null);
 

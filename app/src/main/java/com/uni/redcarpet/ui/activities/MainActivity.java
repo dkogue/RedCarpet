@@ -492,7 +492,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onAddUserSuccess(String message) {
         // mProgressDialog.dismiss();
         Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
-        UserListingActivity.startActivity(getBaseContext(), Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        HomeActivity.startActivity(getBaseContext(), Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 
     @Override

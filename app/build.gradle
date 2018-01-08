@@ -39,6 +39,8 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:11.0.4'
     //okhttp
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    // Picasso
+    compile 'com.squareup.picasso:picasso:2.5.0'
     //event bus
     compile 'org.greenrobot:eventbus:3.0.0'
     testCompile 'junit:junit:4.12'

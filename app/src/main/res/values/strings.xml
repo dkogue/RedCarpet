@@ -60,5 +60,6 @@
     <string name="msg_password">Enter below the verification code that has been sent to you via SMS.</string>
     <string name="prompt_phone">Phone Number</string>
     <string name="confirm_location">Confirm location</string>
+    <string name="no_events_to_display">No events to display.</string>
 
 </resources>

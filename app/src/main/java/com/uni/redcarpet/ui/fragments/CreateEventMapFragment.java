@@ -27,22 +27,23 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.uni.redcarpet.R;
 import com.uni.redcarpet.models.Event;
-import com.uni.redcarpet.utils.EventJson;
+import com.uni.redcarpet.utils.EventUtil;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
 
-/** This class is created to allow the user to be able to reposition the marker on their map after creating an event
+/**
+ * Gives the user the opportunity to bring the location marker to a specific position in order to set his location
  * so as to save the correct location for the event
  */
 
-public class NewEventMapFragment extends Fragment implements OnMapReadyCallback {
+public class CreateEventMapFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private EventJson ej;
     String address;
     String name;
     float colorVal;
@@ -88,8 +89,8 @@ public class NewEventMapFragment extends Fragment implements OnMapReadyCallback 
                     current_event.latitude = Double.toString(ltd);
 
                     FirebaseAuth auth = FirebaseAuth.getInstance();
-                    EventJson.saveEventToFirebase(current_event);
-                    EventJson.saveEventForSpecificUser(auth.getCurrentUser().getUid(),current_event);
+                    EventUtil.saveEventToFirebase(current_event);
+                    EventUtil.saveEventForSpecificUser(auth.getCurrentUser().getUid(),current_event);
 
                 } catch(IOException e){
                     System.out.println(e);
@@ -109,10 +110,7 @@ public class NewEventMapFragment extends Fragment implements OnMapReadyCallback 
                                 // update login status
                                 Bundle args = new Bundle();
 
-                                // Only logins can do this
-                                // args.putBoolean("hasLoggedIn", MainActivity.hasLoggedIn);
-
-                                Fragment newFragment = new ListFragment();
+                                Fragment newFragment = new EventsFragment();
 
                                 fragmentTransaction.replace(R.id.frame, newFragment);
                                 fragmentTransaction.addToBackStack(null);

@@ -29,7 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.uni.redcarpet.R;
 import com.uni.redcarpet.models.Event;
-import com.uni.redcarpet.utils.EventJson;
+import com.uni.redcarpet.utils.EventUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +39,7 @@ import java.util.List;
 public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private EventJson ej;
+    private EventUtil ej;
     public HashMap<Marker, Event> hmap = new HashMap<Marker, Event>();
     String[] types;
 
@@ -102,7 +102,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<Event> markersArray;
 
-                ej = new EventJson();
+                ej = new EventUtil();
 
                 markersArray = ej.checkCurrentDate(ej.getAllEvents(dataSnapshot,getActivity()));
 
