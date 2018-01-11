@@ -35,7 +35,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
                     android:ems="10"
-                    android:id="@+id/organizer"
+                    android:id="@+id/organizer_create_ev"
                     android:textAlignment="viewStart"
                     android:lineSpacingExtra="30sp"
                     android:singleLine="true"

@@ -1,6 +1,7 @@
 package com.uni.redcarpet.ui.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.uni.redcarpet.R;
 import com.uni.redcarpet.models.Event;
+import com.uni.redcarpet.ui.activities.EventDetailsActivity;
 import com.uni.redcarpet.ui.adapters.listAdapter;
 import com.uni.redcarpet.utils.EventUtil;
 
@@ -111,10 +113,10 @@ public class EventsFragment extends Fragment {
 
                         bundle.putStringArray("currEvent",event_to_edited_string);
 
-                        // Intent detail = new Intent(getActivity(), DetailTypeActivity.class);
-                        // detail.putExtras(bundle);
+                        Intent detail = new Intent(getActivity(), EventDetailsActivity.class);
+                        detail.putExtras(bundle);
 
-                        // startActivity(detail);
+                        startActivity(detail);
                     }
                 });
             }

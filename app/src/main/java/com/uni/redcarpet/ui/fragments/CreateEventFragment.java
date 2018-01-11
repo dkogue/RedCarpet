@@ -43,7 +43,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         b3.setOnClickListener(this);
         b2.setOnClickListener(this);
 
-        etorganizer = (EditText) v.findViewById(R.id.organizer);
+        etorganizer = (EditText) v.findViewById(R.id.organizer_create_ev);
         etevent_name = (EditText) v.findViewById(R.id.event_title);
         etaddress = (EditText) v.findViewById(R.id.address);
 
