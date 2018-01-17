@@ -39,7 +39,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void init() {
         // We set the toolbar here
-        setSupportActionBar(mToolbar);
+        // setSupportActionBar(mToolbar);
 
         // We set toolbar title
         mToolbar.setTitle(getIntent().getExtras().getString(Constants.ARG_RECEIVER));

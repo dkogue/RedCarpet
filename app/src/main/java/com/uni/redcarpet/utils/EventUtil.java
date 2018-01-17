@@ -9,6 +9,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.uni.redcarpet.models.Comment;
 import com.uni.redcarpet.models.Event;
 
 import org.json.JSONArray;
@@ -34,6 +35,7 @@ public class EventUtil {
     private String url;
     private String image;
     private ArrayList<Event> events;
+    private ArrayList<Comment> comments;
 
 
     // get events from file
@@ -142,6 +144,23 @@ public class EventUtil {
 
     }
 
+    //save certain comment to firebase
+    public static void saveCommentToFirebase(Event event, Comment comment){
+
+        FirebaseDatabase database;
+        DatabaseReference myRef;
+
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("Comments");
+
+        Map<String,Comment> map = new HashMap<String, Comment>();
+
+        map.put(Long.toString(comment.commentTimestamp),comment);
+
+        // myRef.child(event.type).child(event.name).setValue(map);
+        myRef.child(event.name+"_"+event.date).setValue(map);
+
+    }
 
     //get events from firebase for specific type
     public static ArrayList<Event> getEventFromFirebaseByType(final String type){
@@ -293,6 +312,124 @@ public class EventUtil {
         return events;
     }
 
+    public ArrayList<Comment> getAllCommentsForEvent(final String name_date, DataSnapshot dataSnapshot){
+
+        final ArrayList<Comment> comments = new ArrayList<Comment>();
+                if (dataSnapshot == null && dataSnapshot.getValue() == null) {
+                    System.out.println("No comment added! Be the first to comment!");
+                } else {
+
+               for (Map<String,Map<String,Object>> event_with_comments :(((Map<String,Map<String,Map<String,Object>>>) dataSnapshot.getValue()).values())){
+
+                    if (event_with_comments == null) return comments;
+                    Collection<Map<String,Object>> string_comments = event_with_comments.values();
+                    if (string_comments == null) return comments;
+                    for (Map<String,Object> comment : string_comments){
+                        Comment new_comment = new Comment();
+
+                        new_comment.commentedEvent = (String)comment.get("commentedEvent");
+                        new_comment.commentMessage = (String)comment.get("commentMessage");
+                        new_comment.commenterName = (String)comment.get("commenterName");
+                        new_comment.commenterImage = (String)comment.get("commenterImage");
+                        new_comment.commentTimestamp = (Long) comment.get("commentTimestamp");
+
+                        comments.add(new_comment);
+                    }
+                }
+         }
+
+        return comments;
+    }
+
+/*
+    public ArrayList<Comment> getAllCommentsForEvent(final String name_date){
+
+        final ArrayList<Comment> comments = new ArrayList<Comment>();
+
+        FirebaseDatabase database;
+        DatabaseReference myRef, eventRef;
+
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("Comments");
+
+        eventRef = myRef.child(name_date);
+
+        eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot == null && dataSnapshot.getValue() == null) {
+                    System.out.println("No comment added! Be the first to comment!");
+                } else {
+
+                    for (Map<String,Map<String,Object>> event_with_comments :(((Map<String,Map<String,Map<String,Object>>>) dataSnapshot.getValue()).values())){
+                        if (event_with_comments == null) return;
+                        Collection<Map<String,Object>> string_comments = event_with_comments.values();
+                        if (string_comments == null) return;
+                        for (Map<String,Object> comment : string_comments){
+                            Comment new_comment = new Comment();
+
+                            new_comment.commentedEvent = (String)comment.get("commentedEvent");
+                            new_comment.commentMessage = (String)comment.get("commentMessage");
+                            new_comment.commenterName = (String)comment.get("commenterName");
+                            new_comment.commenterImage = (String)comment.get("commenterImage");
+                            new_comment.commentTimestamp = (Long) comment.get("commentTimestamp");
+
+                            System.out.println(new_comment.toString());
+
+                            comments.add(new_comment);}}}}
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+        System.out.println("EventUtils - getCommentsForEvent: "+comments);
+        return comments;
+    }
+*/
+
+
+    /*//get all events from the firebase
+    public ArrayList<Comment> getAllCommentsForEvent(DataSnapshot dataSnapshot, Activity activity, String name_date){
+        comments = new ArrayList<Comment>();
+
+        if (dataSnapshot == null || dataSnapshot.getValue() == null) {
+            System.out.println("No comment added! Be the first to comment!");
+        }else{
+
+            for (Map<String,Map<String,Map<String,Map<String,Object>>>> type_comments : (((Map<String,Map<String,Map<String,Map<String,Map<String,Object>>>>>)dataSnapshot.getValue()).values())){
+
+                if (type_comments == null) return comments;
+
+                Collection<Map<String,Map<String,Object>>> string_events = type_events.values();
+
+                if (string_events == null) return events;
+
+                for (Map<String,Map<String,Object>> map : string_events){
+                    for (Map<String,Object> event : map.values()){
+                        Event new_event = new Event();
+
+                        //System.out.println("longitude: "+event.get("longitude"));
+
+                        new_event.address = (String)event.get("address");
+                        new_event.date = (String)event.get("date");
+                        new_event.longitude = (String) event.get("longitude");
+                        new_event.latitude = (String) event.get("latitude");
+                        new_event.name = (String)event.get("name");
+                        new_event.image = (String) event.get("image");
+                        new_event.type = (String) event.get("type");
+                        new_event.organizer = (String) event.get("organizer");
+                        new_event.description = (String) event.get("description");
+                        //System.out.println(new_event.toString());
+
+                        events.add(new_event);
+                    }
+                }
+            }
+        }
+
+        return events;
+
+    }
+*/
     //get all events from the firebase
     public ArrayList<Event> getAllEvents(DataSnapshot dataSnapshot, Activity activity){
         events = new ArrayList<Event>();
@@ -335,6 +472,7 @@ public class EventUtil {
         return events;
 
     }
+
 
     //filter a list of events by date
     public ArrayList<Event> checkDate(String date, ArrayList<Event> events){

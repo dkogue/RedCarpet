@@ -47,8 +47,9 @@ public class HomeActivity extends AppCompatActivity {
                         break;
                     case R.id.navigation_chat_id:
                         // fragment = new MapFragment();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.frame, fragment).commit();
-                        Snackbar.make(coordinatorLayout, "Chat", Snackbar.LENGTH_SHORT).show();
+                        // getSupportFragmentManager().beginTransaction().replace(R.id.frame, fragment).commit();
+                        // Snackbar.make(coordinatorLayout, "Chat", Snackbar.LENGTH_SHORT).show();
+                        UserListingActivity.startActivity(getBaseContext(), Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         break;
                     case R.id.navigation_checkin_id:
                         // fragment = new CalendarFragment();

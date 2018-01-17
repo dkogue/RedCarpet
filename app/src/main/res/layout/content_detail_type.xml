@@ -210,12 +210,21 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_view_chat"
+                <ListView
+                    android:id="@+id/list_view_comment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_above="@+id/edit_text_message"
-                    app:layoutManager="LinearLayoutManager" />
+                    android:layout_above="@+id/et_add_comment" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/empty_list"
+                    android:text="@string/no_comment_added"
+                    android:textAlignment="center"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:visibility="invisible"/>
 
                 <EditText
                     android:id="@+id/et_add_comment"

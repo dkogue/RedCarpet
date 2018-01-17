@@ -63,5 +63,6 @@
     <string name="no_events_to_display">No events to display.</string>
     <string name="add_a_comment">Add a comment</string>
     <string name="post_comment">Post</string>
+    <string name="no_comment_added">No comment added! Be the first to comment!</string>
 
 </resources>

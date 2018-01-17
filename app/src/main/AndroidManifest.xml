@@ -63,6 +63,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity android:name=".ui.activities.HomeActivity" />
+        <activity android:name=".ui.activities.ChatActivity" />
         <activity android:name=".ui.activities.EventDetailsActivity"></activity>
     </application>
 

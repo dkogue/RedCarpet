@@ -6,9 +6,9 @@
 
 
     <ImageView
-        android:id="@+id/event_photo"
-        android:layout_width="90dp"
-        android:layout_height="90dp"
+        android:id="@+id/commenter_photo"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:src="@mipmap/ic_launcher"
@@ -17,29 +17,28 @@
 
 
     <RelativeLayout
-        android:id="@+id/recipe_list_text_layout"
+        android:id="@+id/comment_list_text_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/event_address"
-        android:layout_toRightOf="@id/event_photo"
+        android:layout_toRightOf="@id/commenter_photo"
         android:layout_marginRight="10dp">
 
         <TextView
-            android:id="@+id/commenter_name"
+            android:id="@+id/tv_commenter_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:textSize="18sp"
-            tools:text="Comenters name"
+            tools:text="Commenter's name"
             />
 
         <TextView
             android:id="@+id/tv_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/commenter_name"
+            android:layout_below="@+id/tv_commenter_name"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="2dp"

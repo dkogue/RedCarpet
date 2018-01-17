@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
     private AddUserPresenter mAddUserPresenter;
+    public static FirebaseUser currentUser;
 
 
     ProgressBar progressBar;
@@ -209,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = myAuthentication.getCurrentUser();
+        currentUser = myAuthentication.getCurrentUser();
         updateUI(currentUser);
 
         //START_EXCLUDE
