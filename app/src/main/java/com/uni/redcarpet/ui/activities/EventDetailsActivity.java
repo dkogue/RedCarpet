@@ -36,9 +36,10 @@ public class EventDetailsActivity extends AppCompatActivity {
     private EventUtil eventUtil;
     private FirebaseDatabase database;
     public FirebaseAuth auth;
-    private DatabaseReference myRef;
+    private DatabaseReference myRef, specificEventRef;
     private TextView emptyListText;
     private String commenter;
+    private String currentClickedEvent;
 
 
     @Override
@@ -85,6 +86,9 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         String currType = "Party";
 
+        currentClickedEvent = currEvent[1]+"_"+currEvent[2];
+
+
         // *******************later load image from firebase
 
         eventIcon.setImageResource(R.drawable.party);
@@ -95,11 +99,13 @@ public class EventDetailsActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("Comments");
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        specificEventRef = myRef.child(currentClickedEvent);
+        //myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        specificEventRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String current_event = currEvent[1]+"_"+currEvent[2];
-                ArrayList<Comment> comments = eventUtil.getAllCommentsForEvent(current_event, dataSnapshot);
+                currentClickedEvent = currEvent[1]+"_"+currEvent[2];
+                ArrayList<Comment> comments = eventUtil.getAllCommentsForEvent(currentClickedEvent, dataSnapshot);
 
                 // events = ej.checkDate(date,events);
                 final CommentListAdapter list = new CommentListAdapter(getBaseContext(), comments);

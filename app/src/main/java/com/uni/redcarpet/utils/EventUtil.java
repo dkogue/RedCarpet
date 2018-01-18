@@ -341,6 +341,34 @@ public class EventUtil {
         return comments;
     }
 
+    public ArrayList<Comment> getAllCommentsForSpecificEvent(final String name_date, DataSnapshot dataSnapshot){
+
+        final ArrayList<Comment> comments = new ArrayList<Comment>();
+        if (dataSnapshot == null && dataSnapshot.getValue() == null) {
+            System.out.println("No comment added! Be the first to comment!");
+        } else {
+
+            Map<String,Map<String,Object>> event_with_comments =(((Map<String,Map<String,Object>>) dataSnapshot.getValue()));
+
+                if (event_with_comments == null) return comments;
+                Collection<Map<String,Object>> string_comments = event_with_comments.values();
+                if (string_comments == null) return comments;
+                for (Map<String,Object> comment : string_comments){
+                    Comment new_comment = new Comment();
+
+                    new_comment.commentedEvent = (String)comment.get("commentedEvent");
+                    new_comment.commentMessage = (String)comment.get("commentMessage");
+                    new_comment.commenterName = (String)comment.get("commenterName");
+                    new_comment.commenterImage = (String)comment.get("commenterImage");
+                    new_comment.commentTimestamp = (Long) comment.get("commentTimestamp");
+
+                    comments.add(new_comment);
+                }
+            }
+
+
+        return comments;
+    }
 /*
     public ArrayList<Comment> getAllCommentsForEvent(final String name_date){
 
