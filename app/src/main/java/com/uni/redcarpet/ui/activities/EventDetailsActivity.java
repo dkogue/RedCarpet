@@ -1,9 +1,12 @@
 package com.uni.redcarpet.ui.activities;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.View.MeasureSpec;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -105,7 +108,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 currentClickedEvent = currEvent[1]+"_"+currEvent[2];
-                ArrayList<Comment> comments = eventUtil.getAllCommentsForEvent(currentClickedEvent, dataSnapshot);
+                ArrayList<Comment> comments = eventUtil.getAllCommentsForSpecificEvent(currentClickedEvent, dataSnapshot);
 
                 // events = ej.checkDate(date,events);
                 final CommentListAdapter list = new CommentListAdapter(getBaseContext(), comments);
@@ -118,6 +121,8 @@ public class EventDetailsActivity extends AppCompatActivity {
                     emptyListText.setVisibility(View.INVISIBLE);
 
                 mListViewComment.setAdapter(list);
+
+                setListViewHeightBasedOnChildren(mListViewComment, comments, getBaseContext());
 
             }
 
@@ -147,7 +152,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         // commenterImage.setImageResource(R.drawable.party);
         String commenterPhotoUrl = "";
 
-        if (FirebaseAuth.getInstance().getCurrentUser().getEmail() == null) {
+        if (FirebaseAuth.getInstance().getCurrentUser().getEmail().isEmpty()) {
             commenter = MainActivity.currentUser.getPhoneNumber();
         } else {
             commenter = MainActivity.currentUser.getEmail();
@@ -166,6 +171,27 @@ public class EventDetailsActivity extends AppCompatActivity {
                 commentMessage,
                 System.currentTimeMillis());
         EventUtil.saveCommentToFirebase(current_event,new_comment);
+    }
+
+    public static void setListViewHeightBasedOnChildren(ListView listView, ArrayList<Comment> comments, Context context) {
+        CommentListAdapter commentListAdapter =new CommentListAdapter(context, comments);
+        if (commentListAdapter == null)
+            return;
+
+        int desiredWidth = MeasureSpec.makeMeasureSpec(listView.getWidth(), MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < commentListAdapter.getCount(); i++) {
+            view = commentListAdapter.getView(i, view, listView);
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            view.measure(desiredWidth, MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (commentListAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
     }
 
 

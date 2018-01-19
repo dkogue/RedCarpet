@@ -205,26 +205,27 @@
                 android:textSize="18sp"
                 android:layout_marginLeft="15sp"/>
 
+            <ListView
+                android:id="@+id/list_view_comment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/et_add_comment" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/empty_list"
+                android:text="@string/no_comment_added"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:visibility="invisible"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <ListView
-                    android:id="@+id/list_view_comment"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_above="@+id/et_add_comment" />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/empty_list"
-                    android:text="@string/no_comment_added"
-                    android:textAlignment="center"
-                    android:textSize="14sp"
-                    android:gravity="center"
-                    android:includeFontPadding="false"
-                    android:visibility="invisible"/>
 
                 <EditText
                     android:id="@+id/et_add_comment"

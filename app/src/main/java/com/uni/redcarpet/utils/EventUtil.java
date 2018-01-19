@@ -153,12 +153,12 @@ public class EventUtil {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("Comments");
 
-        Map<String,Comment> map = new HashMap<String, Comment>();
+        //Map<String,Comment> map = new HashMap<String, Comment>();
 
-        map.put(Long.toString(comment.commentTimestamp),comment);
+        //map.put(Long.toString(comment.commentTimestamp),comment);
 
         // myRef.child(event.type).child(event.name).setValue(map);
-        myRef.child(event.name+"_"+event.date).setValue(map);
+        myRef.child(event.name+"_"+event.date).child(Long.toString(comment.commentTimestamp)).setValue(comment);
 
     }
 
