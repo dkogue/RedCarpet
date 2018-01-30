@@ -1,26 +1,28 @@
 package com.uni.redcarpet.ui.activities;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +42,7 @@ import com.uni.redcarpet.core.users.add.AddUserPresenter;
 
 import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity implements
+public class MainActivityNew extends AppCompatActivity implements
         View.OnClickListener, AddUserContract.View {
 
 
@@ -86,19 +88,19 @@ public class MainActivity extends AppCompatActivity implements
 
     private PopupWindow popupWindow;
     private LayoutInflater layoutInflater;
-    private RelativeLayout createaccount;
+    private FrameLayout frameLayout;
+
+
 
     private AddUserPresenter mAddUserPresenter;
     public static FirebaseUser currentUser;
-    public View container;
-    final Context context = this;
 
 
     ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_all_new);
+        setContentView(R.layout.activity_main_all);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -112,45 +114,27 @@ public class MainActivity extends AppCompatActivity implements
         // We assign views
         myTextStatus = (TextView) findViewById(R.id.status);
         myTextAppName = (TextView) findViewById(R.id.appname);
+        myTextPhoneSuccess = (TextView) findViewById(R.id.detail);
+        myTextPhoneVerifMsg = (TextView) findViewById(R.id.very_message);
+        myTextPhoneVerifTitle = (TextView) findViewById(R.id.phonverifi);
+
 
         myETextPhoneNoField = (EditText) findViewById(R.id.input_phonenumber);
-        layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-       container = getLayoutInflater().inflate(R.layout.activity_main_all_popup,null);
+        myETextVerifCodeField = (EditText) findViewById(R.id.input_verificationcode);
 
-        myTextPhoneSuccess = (TextView) container.findViewById(R.id.detail);
-        myTextAppName = (TextView) container.findViewById(R.id.appname);
-        myTextPhoneVerifMsg = (TextView) container.findViewById(R.id.very_message);
-        myTextPhoneVerifTitle = (TextView) container.findViewById(R.id.phonverifi);
-        myETextVerifCodeField = (EditText) container.findViewById(R.id.input_verificationcode);
+        frameLayout = (FrameLayout) findViewById(R.id.createaccount);
 
-        myVerifButton = (Button) container.findViewById(R.id.btn_verify_popup);
-        myVerifButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String code = myETextVerifCodeField.getText().toString();
-                if (TextUtils.isEmpty(code)) {
-                    myETextVerifCodeField.setError("Code cannot be empty.");
-                    return;
-                }
-
-                verifyPhoneNumberWithCode(mVerificationId, code);
-            }
-        });
-
-        myResendCodeButton = (Button) container.findViewById(R.id.btn_resend_popup);
-        myResendCodeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resendVerificationCode(myETextPhoneNoField.getText().toString(), mResendToken);
-            }
-        });
 
         myCreateAccButton = (Button) findViewById(R.id.btn_create);
+        myVerifButton = (Button) findViewById(R.id.btn_verify);
+        myResendCodeButton = (Button) findViewById(R.id.btn_resend);
+
 
         // We add click listeners to the buttons
-        createaccount = (RelativeLayout)findViewById(R.id.createaccount);
 
         myCreateAccButton.setOnClickListener(this);
+        myVerifButton.setOnClickListener(this);
+        myResendCodeButton.setOnClickListener(this);
 
         // START initialize_auth
         myAuthentication = FirebaseAuth.getInstance();
@@ -232,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public static void startIntent(Context context, int flags) {
-        Intent intent = new Intent(context, MainActivity.class);
+        Intent intent = new Intent(context, MainActivityNew.class);
         intent.setFlags(flags);
         context.startActivity(intent);
     }
@@ -362,8 +346,47 @@ public class MainActivity extends AppCompatActivity implements
     private void updateUI(int uiState, FirebaseUser user, PhoneAuthCredential cred) {
         mAddUserPresenter = new AddUserPresenter(this);
         switch (uiState) {
+            case STATE_INITIALIZED:
 
-                //break;
+                // Initialized state, show only the phone number field and start button
+                enableViews(myCreateAccButton/*, myETextPhoneNoField, myTextAppName, myTextStatus*/);
+                /*disableViews(myVerifButton, myResendCodeButton, myTextPhoneVerifTitle,
+                        myETextVerifCodeField, myTextPhoneSuccess, myTextPhoneVerifMsg);*/
+                //mDetailText.setText(null);
+                break;
+            case STATE_CODE_SENT:
+                // Code sent state, show the verification field.
+                disableViews(myCreateAccButton/*, myETextPhoneNoField, myTextAppName, myTextPhoneSuccess*/);
+                /*enableViews(myVerifButton, myResendCodeButton, myTextPhoneVerifTitle,
+                        myETextVerifCodeField, myTextPhoneVerifMsg, myTextStatus);*/
+
+                break;
+            case STATE_VERIFY_FAILED:
+                // Verification has failed, show all options
+                enableViews(myVerifButton, myResendCodeButton, myTextPhoneVerifTitle, myETextVerifCodeField, myTextPhoneVerifMsg);
+                enableViews(myCreateAccButton, myETextPhoneNoField, myTextAppName, myTextStatus, myTextPhoneSuccess);
+
+
+                progressBar.setVisibility(View.INVISIBLE);
+                break;
+            case STATE_VERIFY_SUCCESS:
+                // After a sucessful verification proceed to firebase sign in
+                disableViews(myCreateAccButton, myETextPhoneNoField, myTextAppName, myTextStatus, myTextPhoneSuccess);
+                enableViews(myTextPhoneSuccess);
+
+                progressBar.setVisibility(View.INVISIBLE);
+
+                // We set the verification text based on the credential
+                if (cred != null) {
+                    if (cred.getSmsCode() != null) {
+                        myETextVerifCodeField.setText(cred.getSmsCode());
+                    } else {
+                        myETextVerifCodeField.setText(R.string.instant_validation);
+                        myETextVerifCodeField.setTextColor(Color.parseColor("#4bacb8"));
+                    }
+                }
+
+                break;
             case STATE_SIGNIN_FAILED:
                 enableViews(myTextStatus);
                 myTextStatus.setText(R.string.status_sign_in_failed);
@@ -383,7 +406,7 @@ public class MainActivity extends AppCompatActivity implements
             // Signed out
             // Adjust the views accordingly
 
-           // myTextStatus.setText(R.string.signed_out);;
+            myTextStatus.setText(R.string.signed_out);;
         } else {
             // Signed in
             // Adjust the views accordingly
@@ -427,6 +450,21 @@ public class MainActivity extends AppCompatActivity implements
                     return;
                 }
 
+                //layout inflater
+                layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+                ViewGroup container = (ViewGroup) layoutInflater.inflate(R.layout.activity_main_all_popup, null);
+
+                popupWindow = new PopupWindow(container,2000,2000, true);
+                 popupWindow.showAtLocation(frameLayout, Gravity.VERTICAL_GRAVITY_MASK,3000,3000);
+                 container.setOnTouchListener(new View.OnTouchListener() {
+                     @Override
+                     public boolean onTouch(View view, MotionEvent motionEvent) {
+                         popupWindow.dismiss();
+                         return true;
+                     }
+                 });
+
+
                 // hide keyboard start
                 InputMethodManager inputManager = (InputMethodManager)
                         getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -436,30 +474,12 @@ public class MainActivity extends AppCompatActivity implements
                 // hide keyboard end
 
 
-                //myTextStatus.setText("Authenticating....!");
+                myTextStatus.setText("Authenticating....!");
                 progressBar.setVisibility(View.VISIBLE);
                 startPhoneNumberVerification(myETextPhoneNoField.getText().toString());
 
-                //layout inflater
-
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-                alertDialogBuilder.setTitle("Phone Verification");
-                alertDialogBuilder.setView(container)
-                                .setCancelable(true)
-                                .setMessage("Enter the verification code");
-                alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-
-                LayoutInflater inflater = getLayoutInflater();
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-
-            break;
-            case R.id.btn_verify_popup:
+                break;
+            case R.id.btn_verify:
                 String code = myETextVerifCodeField.getText().toString();
                 if (TextUtils.isEmpty(code)) {
                     myETextVerifCodeField.setError("Code cannot be empty.");
@@ -468,7 +488,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 verifyPhoneNumberWithCode(mVerificationId, code);
                 break;
-            case R.id.btn_resend_popup:
+            case R.id.btn_resend:
                 resendVerificationCode(myETextPhoneNoField.getText().toString(), mResendToken);
                 break;
         }

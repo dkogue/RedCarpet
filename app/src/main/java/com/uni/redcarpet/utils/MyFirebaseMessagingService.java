@@ -9,18 +9,19 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 import com.uni.redcarpet.R;
 import com.uni.redcarpet.events.PushNotificationEvent;
 import com.uni.redcarpet.ui.activities.ChatActivity;
 import com.uni.redcarpet.ui.activities.StartupCheck;
-import com.google.firebase.messaging.FirebaseMessagingService;
-import com.google.firebase.messaging.RemoteMessage;
 
 import org.greenrobot.eventbus.EventBus;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
+
 
     /**
      * Called when message is received.
@@ -33,12 +34,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
+        //Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
+
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Notification: " + remoteMessage.getNotification().getBody());
+           Log.d(TAG, "Notification: " + remoteMessage.getNotification().getBody());
+            //sendNotification(remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody());
 
-            // sendNotification(remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody());
         }
 
         // Check if message contains a data payload.
@@ -90,6 +93,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setSmallIcon(R.drawable.ic_messaging)
                 .setContentTitle(title)
                 .setContentText(message)
+                .setContentTitle("FCM Message")
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);

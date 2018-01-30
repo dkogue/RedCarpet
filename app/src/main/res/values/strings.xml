@@ -65,4 +65,8 @@
     <string name="post_comment">Post</string>
     <string name="no_comment_added">No comment added! Be the first to comment!</string>
 
+
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="upload_event_image">Upload event image</string>
+
 </resources>
