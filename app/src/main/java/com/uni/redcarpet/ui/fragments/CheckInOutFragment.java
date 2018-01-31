@@ -1,109 +1,144 @@
 package com.uni.redcarpet.ui.fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.uni.redcarpet.R;
+import com.uni.redcarpet.models.Event;
+import com.uni.redcarpet.ui.adapters.listAdapterForCheckin;
+import com.uni.redcarpet.utils.EventUtil;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link CheckInOutFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link CheckInOutFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.Collections;
+
+
 public class CheckInOutFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+        private ListView mListViewType;
+        private ArrayList<Event> events;
+        private EventUtil ej;
+        private FirebaseDatabase database;
+        private DatabaseReference myRef, typeRef;
+        private TextView emptyListText;
 
-    private OnFragmentInteractionListener mListener;
 
-    public CheckInOutFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CheckInOutFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CheckInOutFragment newInstance(String param1, String param2) {
-        CheckInOutFragment fragment = new CheckInOutFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        public CheckInOutFragment() {
+            // Required empty public constructor
         }
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_check_in_out, container, false);
-    }
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            // Inflate the layout for this fragment
+            View view = inflater.inflate(R.layout.fragment_check_in_out, container, false);
+            final Context context = getActivity().getApplicationContext();
+            final String[] types = new String[] {};
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            emptyListText = (TextView)view.findViewById(R.id.empty_list);
+
+            /*buttonCreateNewEvent.setOnClickListener(new View.OnClickListener() {
+                android.support.v4.app.Fragment newFragment;
+                FragmentManager fragmentManager;
+                FragmentTransaction fragmentTransaction;
+                @Override
+                public void onClick(View view) {
+                    fragmentManager = getActivity().getSupportFragmentManager();
+                    fragmentTransaction = fragmentManager.beginTransaction();
+                    newFragment = new CreateEventFragment();
+
+                    fragmentTransaction.replace(R.id.frame, newFragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+
+                }
+            });*/
+
+            mListViewType = (ListView) view.findViewById(R.id.listViewEvents);
+
+            ej = new EventUtil();
+            database = FirebaseDatabase.getInstance();
+            myRef = database.getReference("Events");
+
+
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    ArrayList<Event> events = ej.getAllEvents(dataSnapshot,getActivity());
+                    Collections.sort(events);
+                    // events = ej.checkDate(date,events);
+                    final listAdapterForCheckin list = new listAdapterForCheckin(getContext(),events,types);
+
+                    // final popAdapter events_by_date = new popAdapter(getContext(),events);
+
+                    if (events.isEmpty())
+                        emptyListText.setVisibility(View.VISIBLE);
+                    else
+                        emptyListText.setVisibility(View.INVISIBLE);
+
+                    mListViewType.setAdapter(list);
+
+                    mListViewType.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                            Event event_to_be_edited = (Event) list.getItem(i);
+
+                            android.support.v4.app.Fragment newFragment;
+                            FragmentManager fragmentManager;
+                            FragmentTransaction fragmentTransaction;
+
+
+                            String[] event_to_edited_string = new String[8];
+                            event_to_edited_string[0] = event_to_be_edited.organizer;
+                            event_to_edited_string[1] = event_to_be_edited.name;
+                            event_to_edited_string[2] = event_to_be_edited.date;
+                            event_to_edited_string[3] = event_to_be_edited.description;
+                            event_to_edited_string[4] = event_to_be_edited.address;
+                            event_to_edited_string[5] = event_to_be_edited.latitude;
+                            event_to_edited_string[6] = event_to_be_edited.longitude;
+                            event_to_edited_string[7] = event_to_be_edited.type;
+
+                            fragmentManager = getActivity().getSupportFragmentManager();
+                            fragmentTransaction = fragmentManager.beginTransaction();
+                            newFragment = new CheckInPerEvent();
+
+
+
+                            Bundle args = new Bundle();
+
+                            args.putStringArray("currEvent",event_to_edited_string);
+                            newFragment.setArguments(args);
+                            fragmentTransaction.replace(R.id.frame, newFragment);
+                            fragmentTransaction.addToBackStack(null);
+                            fragmentTransaction.commit();
+
+                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+
+            return view;
         }
-    }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }

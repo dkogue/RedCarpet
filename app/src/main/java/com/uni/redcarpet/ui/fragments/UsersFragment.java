@@ -94,15 +94,15 @@ public class UsersFragment extends Fragment implements GetUsersContract.View, It
     @Override
     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
         final String messageReceiver ;
-        if (mUserListingRecyclerAdapter.getUser(position).phoneNumber == null){
-            messageReceiver = mUserListingRecyclerAdapter.getUser(position).email;
+        if (mUserListingRecyclerAdapter.getUser(position).getPhoneNumber() == null){
+            messageReceiver = mUserListingRecyclerAdapter.getUser(position).getEmail();
         } else {
-            messageReceiver = mUserListingRecyclerAdapter.getUser(position).phoneNumber;
+            messageReceiver = mUserListingRecyclerAdapter.getUser(position).getPhoneNumber();
         }
         ChatActivity.startActivity(getActivity(),
                 messageReceiver,
-                mUserListingRecyclerAdapter.getUser(position).uid,
-                mUserListingRecyclerAdapter.getUser(position).firebaseToken);
+                mUserListingRecyclerAdapter.getUser(position).getUid(),
+                mUserListingRecyclerAdapter.getUser(position).getFirebaseToken());
     }
 
     @Override

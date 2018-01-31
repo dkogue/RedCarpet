@@ -80,10 +80,38 @@ public class MainActivity extends AppCompatActivity implements
 
 
     private AddUserPresenter mAddUserPresenter;
-    public static FirebaseUser currentUser;
+    public static FirebaseUser currentFirebaseUser;
+    private static String currentUsername;
+    private static String currentUserEmail;
+    private static Boolean isInDatabase = false;
 
 
     ProgressBar progressBar;
+
+    public static String getCurrentUsername() {
+        return currentUsername;
+    }
+
+    public static void setCurrentUsername(String currentUsername) {
+        MainActivity.currentUsername = currentUsername;
+    }
+
+    public static String getCurrentUserEmail() {
+        return currentUserEmail;
+    }
+
+    public static void setCurrentUserEmail(String currentUserEmail) {
+        MainActivity.currentUserEmail = currentUserEmail;
+    }
+
+    public static Boolean getIsInDatabase() {
+        return isInDatabase;
+    }
+
+    public static void setIsInDatabase(Boolean isInDatabase) {
+        MainActivity.isInDatabase = isInDatabase;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,6 +151,26 @@ public class MainActivity extends AppCompatActivity implements
 
         // START initialize_auth
         myAuthentication = FirebaseAuth.getInstance();
+        currentFirebaseUser = myAuthentication.getCurrentUser();
+
+        if (currentFirebaseUser != null){
+            if ((currentFirebaseUser.getEmail() != null)) {
+                setCurrentUserEmail(currentFirebaseUser.getEmail());
+            }
+        } else {
+            setCurrentUserEmail("");
+        }
+
+        if (currentFirebaseUser != null){
+            if ((currentFirebaseUser.getDisplayName() != null)) {
+                setCurrentUsername(currentFirebaseUser.getDisplayName());
+            }
+        } else {
+            setCurrentUsername("");
+        }
+
+        updateUI(currentFirebaseUser);
+
         // END initialize_auth
 
         // Initialize phone auth callbacks
@@ -198,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements
         };
         //END phone_auth_callbacks
 
+
     }
 
     public static void startIntent(Context context, int flags) {
@@ -210,8 +259,8 @@ public class MainActivity extends AppCompatActivity implements
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        currentUser = myAuthentication.getCurrentUser();
-        updateUI(currentUser);
+
+
 
         //START_EXCLUDE
         if (mVerificationInProgress && validatePhoneNumber()) {
@@ -382,7 +431,7 @@ public class MainActivity extends AppCompatActivity implements
             case STATE_SIGNIN_SUCCESS:
                 // Np op, handled by sign-in check
                 mAddUserPresenter.addUser(getBaseContext().getApplicationContext(), myAuthentication.getCurrentUser());
-
+                // setIsInDatabase(true);
                 myTextStatus.setText(R.string.signed_in);
                 break;
         }
@@ -501,5 +550,41 @@ public class MainActivity extends AppCompatActivity implements
         // mProgressDialog.dismiss();
         Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
     }
+
+    /*public void updateConnectedUserStatus(FirebaseUser firebaseUser){
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference specificUserRef = databaseRef.child(Constants.ARG_USERS).child(firebaseUser.getUid());
+        specificUserRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot == null && dataSnapshot.getValue() == null){
+                    Log.i("DATASNAPSOT_VALUE", dataSnapshot.toString());
+
+                    setIsInDatabase(false);
+
+                } else {
+
+                    setIsInDatabase(true);
+                    *//*User l_user = dataSnapshot.getValue(User.class);
+
+                    String l_currentUserEmail = l_user.getEmail();
+                    setCurrentUserEmail(l_currentUserEmail);
+
+                    String l_currentUsername = l_user.getUsername();
+                    setCurrentUsername(l_currentUsername);
+
+                    Log.i("DATASNAPSOT_VALUE", l_currentUserEmail);*//*
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+*/
+
 }
 

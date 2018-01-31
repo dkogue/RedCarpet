@@ -1,109 +1,162 @@
 package com.uni.redcarpet.ui.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.FirebaseDatabase;
 import com.uni.redcarpet.R;
+import com.uni.redcarpet.models.User;
+import com.uni.redcarpet.ui.activities.MainActivity;
+import com.uni.redcarpet.utils.UserUtils;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SettingsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SettingsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class SettingsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class SettingsFragment extends Fragment implements View.OnClickListener {
 
-    private OnFragmentInteractionListener mListener;
+    private FirebaseDatabase database;
+    public FirebaseAuth auth;
+    private FirebaseUser currentFirebaseUser;
+    private UserUtils userUtils;
 
-    public SettingsFragment() {
-        // Required empty public constructor
-    }
+    EditText userName, etEmailSetting, etaddress;
+    TextView tvPhoneSetting;
+    Button saveSettingsButton;
+    ImageView profilePicture;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SettingsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SettingsFragment newInstance(String param1, String param2) {
-        SettingsFragment fragment = new SettingsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceStates) {
+
+        View v = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        // currentFirebaseUser = MainActivity.currentFirebaseUser;
+        userUtils = new UserUtils();
+
+        // Views
+        profilePicture = (ImageView) v.findViewById(R.id.profilePicture);
+        userName = (EditText) v.findViewById(R.id.etSettingName);
+        tvPhoneSetting = (TextView) v.findViewById(R.id.tvPhoneSetting);
+        etEmailSetting = (EditText) v.findViewById(R.id.etEmailSetting);
+
+        saveSettingsButton = (Button) v.findViewById(R.id.saveSettingsbtn);
+
+        tvPhoneSetting.setText(currentFirebaseUser.getPhoneNumber());
+
+        /*if (!(currentFirebaseUser.getEmail() == null)){
+            etEmailSetting.setText(currentFirebaseUser.getEmail());
+        }*/
+        if (!(currentFirebaseUser.getEmail() == null)){
+            etEmailSetting.setText(currentFirebaseUser.getEmail());
+        }else {
+            etEmailSetting.setText(MainActivity.getCurrentUserEmail());
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+        if (!(currentFirebaseUser.getDisplayName() == null)){
+            userName.setText(currentFirebaseUser.getDisplayName());
         }
+        userName.setGravity(Gravity.CENTER_HORIZONTAL);
+        saveSettingsButton.setOnClickListener(this);
+/*
+        etorganizer = (EditText) v.findViewById(R.id.organizer_create_ev);
+        etevent_name = (EditText) v.findViewById(R.id.event_title);
+        etaddress = (EditText) v.findViewById(R.id.address);*/
+
+        /*spinner = (Spinner) v.findViewById(R.id.category);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.category_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);*/
+
+        return v;
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+    public void onClick(View v) {
+        switch(v.getId()) {
+            // create event button
+            case R.id.saveSettingsbtn:
+// Save to firebase user and update the user in storage
+
+                String l_uid = currentFirebaseUser.getUid();
+                String l_email = etEmailSetting.getText().toString();
+                String l_phoneNumber = currentFirebaseUser.getPhoneNumber();
+                String l_firebaseToken = currentFirebaseUser.getIdToken(true).toString();
+                String l_userName = userName.getText().toString();
+
+                if (l_email.equals("") ||
+                        l_userName.equals("")
+                        ) {
+
+                    new AlertDialog.Builder(getActivity())
+                            //.setIcon(android.R.drawable.ic_dialog_info)
+                            .setTitle("Empty field(s)!")
+                            .setMessage("Please complete the form before updating data.")
+                            .setPositiveButton("Ok", null)
+                            .show();
+                    break;
+                } else {
+                    User user = new User(l_uid, l_email, l_phoneNumber, l_firebaseToken, l_userName);
+
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(l_userName)
+                            //.setPhotoUri(Uri.parse("https://example.com/jane-q-user/profile.jpg"))
+                            .build();
+
+                    currentFirebaseUser.updateProfile(profileUpdates)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d("UPDATE_USER_PROFILE:", "User profile updated.");
+                                    }
+                                }
+                            });
+                    currentFirebaseUser.updateEmail(l_email)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d("UPDATE_USER_PROFILE", "User email address updated.");
+                                    }
+                                }
+                            });
+                    // userUtils.updateUserProfile(getContext(), currentFirebaseUser, user);
+
+                }
+                break;
+            // cancel button
+            case R.id.tvPhoneSetting:
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                Bundle args = new Bundle();
+                // args.putBoolean("hasLoggedIn", MainActivity.hasLoggedIn);
+                // We need to get back to the list of events in the eventfragment.
+                Fragment newFragment = new EventsFragment();
+                newFragment.setArguments(args);
+
+                fragmentTransaction.replace(R.id.frame, newFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                break;
+            default:
         }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

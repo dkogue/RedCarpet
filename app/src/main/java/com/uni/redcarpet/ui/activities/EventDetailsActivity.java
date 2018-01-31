@@ -8,24 +8,31 @@ import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.uni.redcarpet.R;
+import com.uni.redcarpet.models.CheckIn;
 import com.uni.redcarpet.models.Comment;
 import com.uni.redcarpet.models.Event;
 import com.uni.redcarpet.ui.adapters.CommentListAdapter;
+import com.uni.redcarpet.utils.Constants;
 import com.uni.redcarpet.utils.EventUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class EventDetailsActivity extends AppCompatActivity {
@@ -33,16 +40,22 @@ public class EventDetailsActivity extends AppCompatActivity {
     EditText etCommentMessage;
     ImageView eventIcon, commenterImage;
     Button buttonPostComment;
+    Switch chechInSwitch;
+
     private RecyclerView recyclerView_comment;
     private ListView mListViewComment;
 
     private EventUtil eventUtil;
     private FirebaseDatabase database;
     public FirebaseAuth auth;
-    private DatabaseReference myRef, specificEventRef;
+    private DatabaseReference myRef, specificEventRef, specificCommentRef, specificUserChekInREf;
     private TextView emptyListText;
-    private String commenter;
+    private String active_user;
+    private String userPhoneNumber;
     private String currentClickedEvent;
+    private ArrayList<CheckIn> checkIns;
+    private ArrayList<Comment> comments;
+    private CommentListAdapter customListAdapter;
 
 
     @Override
@@ -65,6 +78,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         etCommentMessage = (EditText) findViewById(R.id.et_add_comment);
         commenterImage = (ImageView) findViewById(R.id.commenter_photo);
         buttonPostComment = (Button) findViewById(R.id.btn_post_comment);
+        chechInSwitch = (Switch) findViewById(R.id.checkinswitch);
         emptyListText = (TextView)findViewById(R.id.empty_list);
         mListViewComment = (ListView) findViewById(R.id.list_view_comment);
 
@@ -96,34 +110,23 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         eventIcon.setImageResource(R.drawable.party);
 
+        userPhoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
         setTitle(currEvent[1]);
 
         eventUtil = new EventUtil();
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("Comments");
 
-        specificEventRef = myRef.child(currentClickedEvent);
-        //myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-        specificEventRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        // We verify if this current user has already checked in for this event or not
+        // before continuing
+
+        myRef = database.getReference(Constants.ARG_CHECKINS).child(currentClickedEvent);
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                currentClickedEvent = currEvent[1]+"_"+currEvent[2];
-                ArrayList<Comment> comments = eventUtil.getAllCommentsForSpecificEvent(currentClickedEvent, dataSnapshot);
-
-                // events = ej.checkDate(date,events);
-                final CommentListAdapter list = new CommentListAdapter(getBaseContext(), comments);
-
-                // final popAdapter events_by_date = new popAdapter(getContext(),events);
-
-                if (comments.isEmpty())
-                    emptyListText.setVisibility(View.VISIBLE);
-                else
-                    emptyListText.setVisibility(View.INVISIBLE);
-
-                mListViewComment.setAdapter(list);
-
-                setListViewHeightBasedOnChildren(mListViewComment, comments, getBaseContext());
-
+                if (dataSnapshot.hasChild(userPhoneNumber)){
+                    chechInSwitch.setChecked(true);
+                }
             }
 
             @Override
@@ -134,7 +137,68 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 
 
+        myRef = database.getReference("Comments");
 
+        specificEventRef = myRef.child(currentClickedEvent);
+        specificCommentRef = specificEventRef;
+
+        specificCommentRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                specificEventRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        currentClickedEvent = currEvent[1]+"_"+currEvent[2];
+                        comments = eventUtil.getAllCommentsForSpecificEvent(currentClickedEvent, dataSnapshot);
+
+                        // Sort the comments by timestamp
+                        Collections.sort(comments);
+                        // events = ej.checkDate(date,events);
+                        customListAdapter = new CommentListAdapter(getBaseContext(), comments);
+                        customListAdapter.notifyDataSetChanged();
+                        // final popAdapter events_by_date = new popAdapter(getContext(),events);
+
+                        if (comments.isEmpty())
+                            emptyListText.setVisibility(View.VISIBLE);
+                        else
+                            emptyListText.setVisibility(View.INVISIBLE);
+
+                        mListViewComment.setAdapter(customListAdapter);
+
+
+                        setListViewHeightBasedOnChildren(mListViewComment, comments, getBaseContext());
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
 
         buttonPostComment.setOnClickListener(new View.OnClickListener() {
@@ -144,8 +208,20 @@ public class EventDetailsActivity extends AppCompatActivity {
                 etCommentMessage.getText().clear();
             }
         });
+
+        chechInSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // The toggle is enabled
+                    updateCheckInOutStatus(currEvent, isChecked);
+                } else {
+                    updateCheckInOutStatus(currEvent, false);
+                }
+            }
+        });
     }
 
+    // Post comment: Saves to firebase and updates the customListAdapter
     private void postCommentOnEvent(String[] currentEvent){
         String commentMessage = etCommentMessage.getText().toString();
         String eventName = currentEvent[1];
@@ -153,9 +229,9 @@ public class EventDetailsActivity extends AppCompatActivity {
         String commenterPhotoUrl = "";
 
         if (FirebaseAuth.getInstance().getCurrentUser().getEmail().isEmpty()) {
-            commenter = MainActivity.currentUser.getPhoneNumber();
+            active_user = MainActivity.currentFirebaseUser.getPhoneNumber();
         } else {
-            commenter = MainActivity.currentUser.getEmail();
+            active_user = MainActivity.currentFirebaseUser.getEmail();
         }
         String commenterUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         // String receiverFirebaseToken = getArguments().getString(Constants.ARG_FIREBASE_TOKEN);
@@ -166,11 +242,48 @@ public class EventDetailsActivity extends AppCompatActivity {
                 currentEvent[1]);
 
         Comment new_comment = new Comment(eventName,
-                commenter,
+                active_user,
                 commenterPhotoUrl,
                 commentMessage,
                 System.currentTimeMillis());
-        EventUtil.saveCommentToFirebase(current_event,new_comment);
+        EventUtil.saveCommentToFirebase(current_event, new_comment);
+        comments.add(new_comment);
+    }
+
+
+    private void updateCheckInOutStatus(String[] currentEvent, Boolean check){
+        String eventName = currentEvent[1];
+        String checkedUserPhotoUrl = "";
+
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser.getDisplayName() != null) {
+            active_user = firebaseUser.getDisplayName();
+        } else {
+            active_user = firebaseUser.getPhoneNumber();
+        }
+        String userNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+        // String receiverFirebaseToken = getArguments().getString(Constants.ARG_FIREBASE_TOKEN);
+        Event current_event = new Event (currentEvent[0],
+                "Party",
+                currentEvent[4],
+                currentEvent[2],
+                currentEvent[1]);
+
+        CheckIn new_checkin = new CheckIn(eventName,
+                userNumber,
+                active_user,
+                checkedUserPhotoUrl,
+                System.currentTimeMillis());
+        if (check){
+            EventUtil.saveCheckInStatusToFirebase(current_event,new_checkin);
+            // checkIns.add(new_checkin);
+        } else {
+            myRef = database.getReference(Constants.ARG_CHECKINS);
+            myRef = myRef.child(current_event.name+"_"+ current_event.date).child(userNumber);
+            myRef.removeValue();
+
+        }
+
     }
 
     public static void setListViewHeightBasedOnChildren(ListView listView, ArrayList<Comment> comments, Context context) {

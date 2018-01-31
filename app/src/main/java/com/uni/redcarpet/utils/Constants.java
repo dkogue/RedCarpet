@@ -12,4 +12,9 @@ public class Constants {
 
     public static final String ARG_FRIENDS = "friends";
     public static final String ARG_UID = "uid";
+    public static final String ARG_COMMENTS = "Comments";
+    public static final String ARG_EVENTS = "Events";
+    public static final String ARG_CHECKINS = "Check-Ins";
+
+
 }

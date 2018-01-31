@@ -9,6 +9,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.uni.redcarpet.models.CheckIn;
 import com.uni.redcarpet.models.Comment;
 import com.uni.redcarpet.models.Event;
 
@@ -162,6 +163,23 @@ public class EventUtil {
 
     }
 
+    //save check in status to firebase
+    public static void saveCheckInStatusToFirebase(Event event, CheckIn checkIn){
+
+        FirebaseDatabase database;
+        DatabaseReference myRef;
+
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("Check-Ins");
+
+        //Map<String,Comment> map = new HashMap<String, Comment>();
+
+        //map.put(Long.toString(comment.commentTimestamp),comment);
+
+        // myRef.child(event.type).child(event.name).setValue(map);
+        myRef.child(event.name+"_"+event.date).child(checkIn.checkUserNumber).setValue(checkIn);
+
+    }
     //get events from firebase for specific type
     public static ArrayList<Event> getEventFromFirebaseByType(final String type){
 
@@ -369,6 +387,36 @@ public class EventUtil {
 
         return comments;
     }
+    public ArrayList<CheckIn> getAllCheckInForSpecificEvent(final String name_date, DataSnapshot dataSnapshot){
+
+        final ArrayList<CheckIn> checkIns = new ArrayList<CheckIn>();
+        if (dataSnapshot == null && dataSnapshot.getValue() == null) {
+            System.out.println("Be the first to Check In for this Event!");
+        } else {
+
+            Map<String,Map<String,Object>> event_with_checkIn =(((Map<String,Map<String,Object>>) dataSnapshot.getValue()));
+
+            if (event_with_checkIn == null) return checkIns;
+            Collection<Map<String,Object>> string_checkIns = event_with_checkIn.values();
+            if (string_checkIns == null) return checkIns;
+            for (Map<String,Object> checkIn : string_checkIns){
+                CheckIn new_checkIn = new CheckIn();
+
+                new_checkIn.checkedInEvent = (String) checkIn.get("checkedInEvent");
+                new_checkIn.checkUserName = (String) checkIn.get("checkUserName");
+                new_checkIn.checkUserImage = (String) checkIn.get("checkUserImage");
+                new_checkIn.checkInTimestamp = (Long) checkIn.get("checkInTimestamp");
+
+                checkIns.add(new_checkIn);
+            }
+        }
+
+
+        return checkIns;
+    }
+
+
+
 /*
     public ArrayList<Comment> getAllCommentsForEvent(final String name_date){
 

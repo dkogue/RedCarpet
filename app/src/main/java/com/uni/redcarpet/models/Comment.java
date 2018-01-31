@@ -1,7 +1,7 @@
 package com.uni.redcarpet.models;
 
 
-public class Comment {
+public class Comment implements Comparable<Comment>{
     public String commentedEvent;
     public String commenterName;
     public String commenterImage;
@@ -21,4 +21,10 @@ public class Comment {
 
     }
 
+    @Override
+    public int compareTo(Comment that) {
+        if (this.commentTimestamp > that.commentTimestamp) return 1;
+        if (this.commentTimestamp < that.commentTimestamp) return -1;
+        return 0;
+    }
 }

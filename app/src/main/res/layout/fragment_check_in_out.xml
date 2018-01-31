@@ -2,12 +2,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.uni.redcarpet.ui.fragments.CheckInOutFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.uni.redcarpet.ui.fragments.EventsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:id="@+id/listViewEvents" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/empty_list"
+        android:text="@string/no_events_to_display"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:visibility="invisible"/>
+
 
 </FrameLayout>

@@ -40,16 +40,16 @@ public class UserListingRecyclerAdapter extends RecyclerView.Adapter<UserListing
     public void onBindViewHolder(ViewHolder holder, int position) {
         User user = mUsers.get(position);
 
-        if (user.phoneNumber.equals("") & !user.email.equals("")){
-            String alphabet = user.email.substring(0, 1);
+        if (user.getPhoneNumber().equals("") & !user.getEmail().equals("")){
+            String alphabet = user.getEmail().substring(0, 1);
 
-            holder.txtUsername.setText(user.email);
+            holder.txtUsername.setText(user.getEmail());
             holder.txtUserAlphabet.setText(alphabet);
         }else
         {
             String alphabet = "U";
 
-            holder.txtUsername.setText(user.phoneNumber);
+            holder.txtUsername.setText(user.getPhoneNumber());
             holder.txtUserAlphabet.setText(alphabet);
 
         }

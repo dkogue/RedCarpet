@@ -44,7 +44,6 @@ public class UserListingActivity extends AppCompatActivity implements LogoutCont
         setContentView(R.layout.activity_user_listing);
         bindViews();
         init();
-        initInstances();
     }
 
     private void bindViews() {
@@ -115,40 +114,5 @@ public class UserListingActivity extends AppCompatActivity implements LogoutCont
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    public void initInstances()
-    {
-        navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        // BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
-        // BottomNavigationViewHelp.disableShiftMode(navigation);
-        Menu menu = navigation.getMenu();
-        MenuItem menuItem = menu.getItem(1);
-        menuItem.setChecked(true);
-        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener()
-        {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-                int id = menuItem.getItemId();
-                switch (id) {
-                    case R.id.navigation_events_id:
-                        //Do some thing here
 
-                        break;
-                    case R.id.navigation_chat_id:
-                        //Do some thing here
-
-                        break;
-                    case R.id.navigation_checkin_id:
-                        //Do some thing here
-
-                        break;
-                    case R.id.navigation_settings_id:
-                        //Do some thing here (intent)
-
-                        break;
-                }
-                return false;
-            }
-        });
-
-    }
 }

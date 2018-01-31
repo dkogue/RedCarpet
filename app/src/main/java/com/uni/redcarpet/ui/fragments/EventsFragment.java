@@ -26,6 +26,7 @@ import com.uni.redcarpet.ui.adapters.listAdapter;
 import com.uni.redcarpet.utils.EventUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class EventsFragment extends Fragment {
@@ -82,6 +83,7 @@ public class EventsFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 ArrayList<Event> events = ej.getAllEvents(dataSnapshot,getActivity());
+                Collections.sort(events);
                 // events = ej.checkDate(date,events);
                 final listAdapter list = new listAdapter(getContext(),events,types);
 

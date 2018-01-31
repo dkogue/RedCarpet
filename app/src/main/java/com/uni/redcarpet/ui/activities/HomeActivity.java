@@ -2,6 +2,7 @@ package com.uni.redcarpet.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -13,9 +14,12 @@ import android.view.MenuItem;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnMenuTabSelectedListener;
 import com.uni.redcarpet.R;
+import com.uni.redcarpet.ui.fragments.CheckInOutFragment;
 import com.uni.redcarpet.ui.fragments.EventsFragment;
+import com.uni.redcarpet.ui.fragments.SettingsFragment;
+import com.uni.redcarpet.ui.fragments.UserListingFragment;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements UserListingFragment.OnFragmentInteractionListener{
 
     private CoordinatorLayout coordinatorLayout;
 
@@ -46,19 +50,19 @@ public class HomeActivity extends AppCompatActivity {
                         getSupportFragmentManager().beginTransaction().replace(R.id.frame, fragment).commit();
                         break;
                     case R.id.navigation_chat_id:
-                        // fragment = new MapFragment();
-                        // getSupportFragmentManager().beginTransaction().replace(R.id.frame, fragment).commit();
-                        // Snackbar.make(coordinatorLayout, "Chat", Snackbar.LENGTH_SHORT).show();
-                        UserListingActivity.startActivity(getBaseContext(), Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        fragment = new UserListingFragment();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frame, fragment).commit();
+                        Snackbar.make(coordinatorLayout, "Chat", Snackbar.LENGTH_SHORT).show();
+                        // UserListingActivity.startActivity(getBaseContext(), Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         break;
                     case R.id.navigation_checkin_id:
-                        // fragment = new CalendarFragment();
+                        fragment = new CheckInOutFragment();
                         getSupportFragmentManager().beginTransaction().replace(R.id.frame, fragment).commit();
                         Snackbar.make(coordinatorLayout, "Check In/Out", Snackbar.LENGTH_SHORT).show();
                         break;
                     case R.id.navigation_settings_id:
                         Bundle args = new Bundle();
-                        //fragment = new MoreFragment();
+                        fragment = new SettingsFragment();
                         //fragment.setArguments(args);
                         getSupportFragmentManager().beginTransaction().replace(R.id.frame, fragment).commit();
                         Snackbar.make(coordinatorLayout, "Settings", Snackbar.LENGTH_LONG).show();
@@ -104,4 +108,8 @@ public class HomeActivity extends AppCompatActivity {
         context.startActivity(intent);
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }
