@@ -17,4 +17,6 @@ public class MyFirebaseInstanceIdServicePhoneAuth extends FirebaseInstanceIdServ
         String token = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "Token: " + token);
     }
+
+
 }
