@@ -147,7 +147,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                                 Bundle args = new Bundle();
                                 // args.putBoolean("hasLoggedIn", MainActivity.hasLoggedIn);
                                 args.putStringArray("currEvent",event);
-                                CreateEventMapFragment newFragment = new CreateEventMapFragment();
+                                EventImage newFragment = new EventImage();
                                 newFragment.setArguments(args);
                                 newFragment.setDetails(etaddress.getText().toString(), etevent_name.getText().toString(), 0.0f, null);
 

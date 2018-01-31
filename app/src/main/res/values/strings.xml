@@ -67,6 +67,6 @@
 
 
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
-    <string name="upload_event_image">Upload event image</string>
+    <string name="upload_event_image">Select an image</string>
 
 </resources>

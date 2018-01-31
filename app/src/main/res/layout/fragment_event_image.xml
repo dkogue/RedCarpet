@@ -12,12 +12,13 @@
         android:layout_height="300dp"
         android:id="@+id/eventimage"
         android:layout_margin="30dp"/>
-    <TextView
-        android:layout_width="match_parent"
+    <Button
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:id="@+id/eventimagename"
+      android:layout_gravity="center_horizontal"
+        android:id="@+id/selecteventimage"
         android:text="@string/upload_event_image"
+        android:textStyle="bold"
         android:textColor="@color/black"
 
         />
@@ -29,7 +30,7 @@
         android:layout_gravity="center"
         android:text="Done"
         android:background="@color/red_400"
-        android:id="@+id/eventimagedone"
+        android:id="@+id/uploadeventimage"
         />
 
 </LinearLayout>
