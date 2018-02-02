@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -37,7 +38,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private UserUtils userUtils;
 
     EditText userName, etEmailSetting, etaddress;
-    TextView tvPhoneSetting;
+    TextView tvPhoneSetting, tvGeneralSettings;
     Button saveSettingsButton;
     ImageView profilePicture;
 
@@ -55,6 +56,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         profilePicture = (ImageView) v.findViewById(R.id.profilePicture);
         userName = (EditText) v.findViewById(R.id.etSettingName);
         tvPhoneSetting = (TextView) v.findViewById(R.id.tvPhoneSetting);
+        tvGeneralSettings = (TextView) v.findViewById(R.id.general_settings);
         etEmailSetting = (EditText) v.findViewById(R.id.etEmailSetting);
 
         saveSettingsButton = (Button) v.findViewById(R.id.saveSettingsbtn);
@@ -74,26 +76,20 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         }
         userName.setGravity(Gravity.CENTER_HORIZONTAL);
         saveSettingsButton.setOnClickListener(this);
-/*
-        etorganizer = (EditText) v.findViewById(R.id.organizer_create_ev);
-        etevent_name = (EditText) v.findViewById(R.id.event_title);
-        etaddress = (EditText) v.findViewById(R.id.address);*/
-
-        /*spinner = (Spinner) v.findViewById(R.id.category);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.category_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);*/
+        tvGeneralSettings.setOnClickListener(this);
 
         return v;
     }
 
     @Override
     public void onClick(View v) {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Bundle args = new Bundle();
+
         switch(v.getId()) {
             // create event button
             case R.id.saveSettingsbtn:
-// Save to firebase user and update the user in storage
 
                 String l_uid = currentFirebaseUser.getUid();
                 String l_email = etEmailSetting.getText().toString();
@@ -140,15 +136,12 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                             });
                     // userUtils.updateUserProfile(getContext(), currentFirebaseUser, user);
 
+                    Toast.makeText(getContext(), "User profile Updated!", Toast.LENGTH_SHORT).show();
                 }
                 break;
             // cancel button
             case R.id.tvPhoneSetting:
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                Bundle args = new Bundle();
-                // args.putBoolean("hasLoggedIn", MainActivity.hasLoggedIn);
-                // We need to get back to the list of events in the eventfragment.
+
                 Fragment newFragment = new EventsFragment();
                 newFragment.setArguments(args);
 
@@ -156,6 +149,15 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 break;
+            case R.id.general_settings:
+                // args.putBoolean("hasLoggedIn", MainActivity.hasLoggedIn);
+                // We need to get back to the list of events in the eventfragment.
+                Fragment newFragment1 = new PrivacyFragment();
+                newFragment1.setArguments(args);
+
+                fragmentTransaction.replace(R.id.frame, newFragment1);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             default:
         }
     }

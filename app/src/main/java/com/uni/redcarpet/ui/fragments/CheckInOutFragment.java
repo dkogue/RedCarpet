@@ -43,7 +43,7 @@ public class CheckInOutFragment extends Fragment {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             // Inflate the layout for this fragment
-            View view = inflater.inflate(R.layout.fragment_check_in_out, container, false);
+            View view = inflater.inflate(R.layout.event_list_without_address, container, false);
             final Context context = getActivity().getApplicationContext();
             final String[] types = new String[] {};
 

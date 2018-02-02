@@ -69,5 +69,16 @@
 
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="upload_event_image">Select an image</string>
+    <string name="check_in_list_empty">No Check-In yet!</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="delete_account_textview">We\'re sorry to see you go! You will not be able to access party information if you remove your RedCarpet account. Within a few days of inactivity your phone number will be removed from your our database.</string>
+
+    <string-array name="frequency_array">
+        <item>Hourly</item>
+        <item>Every 8 hours</item>
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Never</item>
+    </string-array>
 
 </resources>

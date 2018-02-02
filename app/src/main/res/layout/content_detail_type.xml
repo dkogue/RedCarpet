@@ -20,8 +20,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            >
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:divider="?android:dividerHorizontal"
+            android:showDividers="end"
+            android:layout_marginBottom="20dp">
             <LinearLayout
                 android:orientation="horizontal"
                 android:id="@+id/event_title"
@@ -205,30 +213,38 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="18sp"
                 android:layout_marginLeft="15sp"/>
+        </LinearLayout>
+
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="273dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="CheckIn"
-                android:id="@+id/checkincheckout"
-                android:textColor="@color/black"
-                android:paddingLeft="15dp"
-                android:textSize="18dp"
-                />
-            <Switch
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAlignment="textStart"
-                android:layout_weight="1"
-                android:layout_marginLeft="70dp"
-                android:id="@+id/checkinswitch"
-                 />
+                <TextView
+                    android:id="@+id/checkincheckout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="15dp"
+                    android:text="CheckIn"
+                    android:textColor="@color/black"
+                    android:textSize="18dp" />
+
+                <Switch
+                    android:id="@+id/checkinswitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="70dp"
+                    android:layout_weight="1"
+                    android:textAlignment="textStart" />
             </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:divider="?android:dividerHorizontal"
+            android:showDividers="beginning"
+            android:layout_marginTop="15dp">
             <ListView
                 android:id="@+id/list_view_comment"
                 android:layout_width="match_parent"
@@ -248,7 +264,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:focusableInTouchMode="true">
 
 
                 <EditText
@@ -277,6 +294,7 @@
 
                     />
                 </LinearLayout>
+            </LinearLayout>
 
         </LinearLayout>
 

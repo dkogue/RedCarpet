@@ -1,8 +1,6 @@
 package com.uni.redcarpet.ui.activities;
 
-import android.support.v7.app.AppCompatActivity;
-
-public class WelcomeActivity extends AppCompatActivity {/*
+public class WelcomeActivity {/*
     private static final int SPLASH_TIME_MS = 4000;
     private Handler mHandler;
     private Runnable mRunnable;

@@ -3,6 +3,8 @@ package com.uni.redcarpet.ui.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -559,6 +561,29 @@ public class MainActivity extends AppCompatActivity implements
     public void onAddUserFailure(String message) {
         // mProgressDialog.dismiss();
         Toast.makeText(getBaseContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    public static boolean isNetworkAvailable(Context context)
+    {
+        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivity != null)
+        {
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+
+            if (info != null)
+            {
+                for (int i = 0; i < info.length; i++)
+                {
+                    Log.i("Class", info[i].getState().toString());
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
 

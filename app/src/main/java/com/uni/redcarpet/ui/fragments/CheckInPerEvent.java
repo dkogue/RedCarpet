@@ -100,67 +100,6 @@ public class CheckInPerEvent  extends Fragment{
 
         specificEventRef = myRef.child(currentClickedEvent);
 
-        // specificCommentRef = specificEventRef;
-
-        /*specificCommentRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                specificEventRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        //currentClickedEvent = currEvent[1]+ "_" +  currEvent[2];
-                        comments = eventUtil.getAllCommentsForSpecificEvent(currentClickedEvent, dataSnapshot);
-
-                        // Sort the comments by timestamp
-                        Collections.sort(comments);
-                        // events = ej.checkDate(date,events);
-                        list = new CommentListAdapter(getContext(), comments);
-                        list.notifyDataSetChanged();
-                        // final popAdapter events_by_date = new popAdapter(getContext(),events);
-
-                        if (comments.isEmpty())
-                            emptyListText.setVisibility(View.VISIBLE);
-                        else
-                            emptyListText.setVisibility(View.INVISIBLE);
-
-                        mListViewComment.setAdapter(list);
-
-
-                        setListViewHeightBasedOnChildren(mListViewComment, comments, getContext());
-
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
-        //myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-
 
         // Retrieving the checkedIn users while listening on Firebase
         specificUserChekInREf = specificEventRef;
@@ -180,7 +119,7 @@ public class CheckInPerEvent  extends Fragment{
                         checkInListAdapter.notifyDataSetChanged();
                         // final popAdapter events_by_date = new popAdapter(getContext(),events);
 
-                        if (checkIns.isEmpty())
+                        if (checkIns == null)
                             emptyListText.setVisibility(View.VISIBLE);
                         else
                             emptyListText.setVisibility(View.INVISIBLE);

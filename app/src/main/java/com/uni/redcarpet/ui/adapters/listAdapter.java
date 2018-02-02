@@ -69,7 +69,13 @@ public class listAdapter extends BaseAdapter{
         Event thisEvent = (Event) getItem(position);
 
         eventName.setText(thisEvent.getName());
-        eventDistance.setText(thisEvent.address);
+        if (thisEvent.address.length()> 24){
+            String address_part = thisEvent.address.substring(0, 22) + "...";
+            eventDistance.setText(address_part);
+        }else {
+            eventDistance.setText(thisEvent.address);
+        }
+
         eventPersons.setText(thisEvent.date);
         // Get thumbnail element
 
